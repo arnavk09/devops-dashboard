@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { fetchPipelineRuns } from "../services/pipelineService";
-import {Container,Typography,Paper,List,ListItemText,Chip,Stack,} from "@mui/material";
+import {
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+} from "@mui/material";
 
 const statusColorMap = {
   success: "success",
@@ -23,25 +31,52 @@ export default function DashboardPage() {
       <Typography variant="h4" mb={3}>
         Pipeline Runs
       </Typography>
-      <List>
+
+      <Grid container spacing={2}>
         {runs.map((run) => (
-          <Paper key={run.id} sx={{ p: 2, mb: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <ListItemText
-                primary={`Branch: ${run.branch}`}
-                secondary={`Commit: ${run.commitSha}`}
-              />
-              <Chip label={run.status} color={statusColorMap[run.status] || "default"} />
-            </Stack>
-            <Typography variant="body2" color="text.secondary">
-              Started at: {new Date(run.startedAt).toLocaleString()}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Duration: {run.durationSeconds} seconds
-            </Typography>
-          </Paper>
+           <Grid item xs={12} sm={6} md={4} lg={3} key={run.id}>
+            <Card
+              variant="outlined"
+              sx={{
+                height: "100%",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                "&:hover": {
+                  transform: "scale(1.03)",
+                  boxShadow: 6,
+                  borderColor: "primary.main",
+                },
+              }}
+            >
+              <CardContent>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={1}
+                >
+                  <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                    {run.branch}
+                  </Typography>
+                  <Chip
+                    size="small"
+                    label={run.status}
+                    color={statusColorMap[run.status] || "default"}
+                  />
+                </Stack>
+                <Typography variant="body2" color="text.secondary" noWrap>
+                  Commit: {run.commitSha}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mt={1}>
+                  Started: {new Date(run.startedAt).toLocaleString()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Duration: {run.durationSeconds} seconds
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </List>
+      </Grid>
     </Container>
   );
 }
